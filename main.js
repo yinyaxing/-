@@ -1,3 +1,56 @@
+判断是否到期();
+function 判断是否到期() {
+    var storage = storages.create('taqu0425_9');
+    var uuid = device.fingerprint
+    uuid = $crypto.digest(uuid, "MD5");
+    if (storage.get('km') && storage.get('activate_code_0423') === "ok！") {
+        let km = storage.get('km');
+        let ask_Key = storage.get('app_key');
+        log("apk_key"+ask_Key)
+        var isValid = /^.{32}$/.test(km);
+        // 检查结果
+        if (isValid) {
+            const data = {
+                "mac": uuid,
+                "cardStr": km
+            }
+            var requestUrl = "https://potato.xudakj.com/api/verifyCardV2";
+            var result = http.post(requestUrl, data, {
+                headers: {
+                    'askKey': ask_Key,
+                    'Content-Type': 'application/json',
+                    "sin": "",
+                    "time": "",
+                    "apiUserToken": "",
+                }
+            });
+            var str = JSON.parse(result.body.string());
+            log(result.body.string());
+            if (str.code === '200') {
+                log("开始运行");
+                sleep(200);
+            } else {
+                alert("\n卡密有误！\n\n请确认后重试！！\n\n" + str.message);  // 警告框
+                exit();
+                exit();
+                exit();
+                exit();
+            }
+        } else {
+            console.log("卡密为空或长度不为32位");
+        }
+
+    } else {
+        alert("\n卡密有误！\n\n设备未激活！！\n\n");  // 警告框
+        exit();
+        exit();
+        exit();
+        exit();
+    }
+}
+
+
+
 
 var storage = storages.create('taqu0425_9');
 var 随机延迟1UI = storage.get("随机延迟1UI")
@@ -202,7 +255,7 @@ function 输入内容(set_value) {
 }
 
 function 发送消息() {
-    发送内容A = 发送内容 + "\n@" + 时间戳秒数();
+    发送内容A = 发送内容 + "\n" + 时间戳秒数();
     输入内容(发送内容A);
     文字点击("发送", 随机延时1, 随机延时2);
     fscs_num = fscs_num + 1;
