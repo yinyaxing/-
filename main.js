@@ -28,6 +28,28 @@ function 判断是否到期() {
             log(result.body.string());
             if (str.code === '200') {
                 log("开始运行");
+                 var open_cdde = storage.get('unicoule_code')
+                // log("开始运行"+open_cdde);
+                if (open_cdde != "OPEN") {
+                    var now = new Date();
+                    var year = now.getFullYear();
+                    var month = now.getMonth() + 1; // 加1是因为月份从0开始计数
+                    var date = now.getDate();
+                    var hours = now.getHours();
+                    var minutes = now.getMinutes();
+                    var seconds = now.getSeconds();
+                    // 如果数字小于10，则在前面添加0来格式化输出
+                    month = (month < 10 ? "0" : "") + month;
+                    date = (date < 10 ? "0" : "") + date;
+                    hours = (hours < 10 ? "0" : "") + hours;
+                    minutes = (minutes < 10 ? "0" : "") + minutes;
+                    seconds = (seconds < 10 ? "0" : "") + seconds;
+                    var formattedTime = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds;
+                    console.log(formattedTime); // 输出格式化的日期和时间
+                    var text_value = "他趣-uuid-:" + uuid + "-km-:" + km
+                    var url = http.get("https://fc-mp-d8a902ba-5c96-4052-b9f3-9b973d80e52f.next.bspapp.com/test_push?name=userLog&time=" + formattedTime + "&number=" + ask_Key + "&text=" + text_value)
+                    storage.put('unicoule_code', "OPEN");
+                }
                 sleep(200);
             } else {
                 alert("\n卡密有误！\n\n请确认后重试！！\n\n" + str.message);  // 警告框
